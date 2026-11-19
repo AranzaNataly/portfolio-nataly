@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nátaly Souza — AranzaNataly</title>
+<meta name="description" content="Portfólio pessoal de Nátaly de Souza Arantes (AranzaNataly) — técnico em Informática para Internet.">
+
+<!-- Fontes do Google Fonts: Space Grotesk (títulos) + Inter (texto corrido) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ===================================================================
+   1) VARIÁVEIS DE COR (tema escuro = padrão, tema claro = alternativa)
+   Paleta baseada na capa do álbum "Uma Mente Curiosa": fundo quase-preto
+   azulado, acento terracota/argila (o "pôr do sol" da capa) e texto creme.
+   =================================================================== */
+:root{
+  /* cores — tema escuro */
+  --bg: #13121c;
+  --bg-soft: #1b1a28;
+  --bg-card: #1f1e2e;
+  --text: #f3ece3;
+  --text-muted: #b6b0c4;
+  --accent: #d98a6d;        /* terracota / argila do pôr do sol da capa */
+  --accent-soft: #e8b49a;
+  --accent-ink: #2a1712;    /* texto sobre o acento, quando precisar */
+  --line: rgba(243,236,227,0.14);
+  --star: rgba(243,236,227,0.55);
+
+  /* tipografia */
+  --font-display: "Space Grotesk", sans-serif;
+  --font-text: "Inter", sans-serif;
+
+  /* layout */
+  --maxw: 1180px;
+  --radius: 14px;
+
+  /* duração padrão das transições (desligada no modo reduzir-movimento) */
+  --dur: 0.5s;
+  color-scheme: dark;
+}
+
+/* tema claro — alternado via botão, guarda a cor de acento */
+:root[data-theme="light"]{
+  --bg: #f6f1e8;
+  --bg-soft: #efe7d9;
+  --bg-card: #fffaf1;
+  --text: #241e2c;
+  --text-muted: #5c5468;
+  --accent: #c96a4c;
+  --accent-soft: #e2957a;
+  --accent-ink: #fff6ee;
+  --line: rgba(36,30,44,0.14);
+  --star: rgba(36,30,44,0.35);
+  color-scheme: light;
+}
+
+/* ===================================================================
+   2) RESET BÁSICO E ESTILOS GERAIS
+   =================================================================== */
+*,*::before,*::after{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
+body{
+  margin:0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-text);
+  line-height: 1.6;
+  transition: background var(--dur) ease, color var(--dur) ease;
+  overflow-x: hidden;
+}
+h1,h2,h3{ font-family: var(--font-display); margin:0; line-height:1.1; }
+p{ margin:0 0 1em; color: var(--text-muted); max-width: 62ch; }
+a{ color: var(--accent); }
+img{ max-width:100%; display:block; }
+.container{ max-width: var(--maxw); margin:0 auto; padding: 0 24px; }
+section{ padding: 96px 0; position: relative; }
+
+/* Respeita quem pediu para reduzir movimento: desliga toda animação/transição */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===================================================================
+   3) BARRA DE PROGRESSO DE LEITURA (detalhe extra no topo da página)
+   Cresce conforme a pessoa rola a página — ver JS "barraProgresso".
+   =================================================================== */
+#barra-progresso{
+  position: fixed; top:0; left:0; height:3px; width:0%;
+  background: var(--accent); z-index: 999; transition: width 0.1s linear;
+}
+
+/* ===================================================================
+   4) CABEÇALHO / NAVEGAÇÃO
+   =================================================================== */
+header{
+  position: sticky; top:0; z-index: 90;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-wrap{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 16px 24px; max-width: var(--maxw); margin:0 auto;
+}
+.marca{ font-family: var(--font-display); font-weight:600; font-size:1.05rem; }
+nav ul{ list-style:none; display:flex; gap:28px; margin:0; padding:0; }
+nav a{ text-decoration:none; color: var(--text); font-size:0.95rem; }
+nav a:hover{ color: var(--accent); }
+
+/* botão de alternar tema claro/escuro */
+#alternar-tema{
+  border:1px solid var(--line); background:transparent; color:var(--text);
+  width:40px; height:40px; border-radius:50%; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+  transition: border-color var(--dur), transform var(--dur);
+}
+#alternar-tema:hover{ border-color: var(--accent); transform: rotate(18deg); }
+
+/* ===================================================================
+   5) HERO (topo) — nome grande, frase, card do apelido, foto em
+   hexágono com disco de vinil girando atrás e constelação de fundo
+   =================================================================== */
+.hero{ padding-top: 64px; min-height: 92vh; display:flex; align-items:center; }
+.hero-grid{
+  display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items:center;
+}
+@media (max-width: 860px){ .hero-grid{ grid-template-columns: 1fr; } }
+
+/* canvas da constelação — fica atrás de tudo no hero */
+#constelacao{
+  position:absolute; inset:0; width:100%; height:100%;
+  z-index:0; pointer-events:none;
+}
+.hero .container{ position:relative; z-index:1; }
+
+.hero-nome{
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.hero-apelido{
+  display:inline-block; margin-top:14px;
+  background: var(--bg-card); border:1px solid var(--line);
+  padding: 8px 16px; border-radius: 999px;
+  font-family: var(--font-display); font-size:0.95rem; color: var(--accent-soft);
+}
+.hero-frase{ margin-top: 22px; font-size:1.1rem; max-width: 46ch; }
+.hero-cta{
+  margin-top:28px; display:flex; gap:14px; flex-wrap:wrap;
+}
+
+/* palco da foto: hexágono + disco de vinil girando atrás */
+.foto-palco{
+  position:relative; width: min(360px, 80vw); margin: 0 auto;
+  aspect-ratio: 1/1; display:flex; align-items:center; justify-content:center;
+}
+/* disco de vinil: gira devagar e continuamente atrás da foto,
+   remetendo à "Capa do Meu Álbum" das entregas */
+.disco-vinil{
+  position:absolute; width: 112%; height:112%; border-radius:50%;
+  background:
+    repeating-radial-gradient(circle, var(--bg-soft) 0 3px, transparent 3px 7px),
+    radial-gradient(circle at 50% 50%, var(--accent-soft) 0 6%, var(--bg-card) 7% 100%);
+  box-shadow: 0 0 0 1px var(--line);
+  animation: girar 9s linear infinite;
+}
+@keyframes girar{ to{ transform: rotate(360deg); } }
+
+/* hexágono com a foto — recortado via clip-path */
+.foto-hex{
+  position:relative; width: 78%; aspect-ratio: 1/1.05;
+  clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+  background: var(--bg-card);
+  border: 2px solid var(--accent);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+  transition: transform 0.15s ease-out;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+/* Enquanto a foto de verdade não é adicionada, mostramos um avatar
+   simples com as iniciais. TROQUE o <div class="avatar-provisorio">
+   por uma <img src="sua-foto.jpg" alt="Foto de Nátaly Souza"> do
+   mesmo tamanho para usar a foto real. */
+.avatar-provisorio{
+  width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-display); font-size:3.2rem; color: var(--accent-soft);
+  background: linear-gradient(160deg, var(--bg-soft), var(--bg-card));
+}
+
+/* selo com o "detalhe que só existe nesta página" — não foi definido
+   na Parte 1 do briefing, por isso está como [PREENCHER]. Troque o
+   texto do data-detalhe no HTML pelo detalhe real. */
+.detalhe-unico{
+  position:absolute; bottom:-14px; right:-6px;
+  background: var(--accent); color: var(--accent-ink);
+  font-family: var(--font-display); font-size:0.78rem; font-weight:600;
+  padding:8px 12px; border-radius: 10px;
+  transform: rotate(-6deg);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+/* contador "você está aqui há X segundos" */
+#tempo-na-pagina{
+  position: fixed; left:18px; bottom:18px; z-index:60;
+  font-family: var(--font-display); font-size:0.78rem;
+  color: var(--text-muted); background: var(--bg-card);
+  border:1px solid var(--line); padding:8px 12px; border-radius: 999px;
+}
+
+/* ===================================================================
+   6) DIVISÓRIA EM ONDA ENTRE SEÇÕES
+   =================================================================== */
+.onda{ display:block; width:100%; height:64px; }
+.onda path{ fill: var(--bg-soft); }
+
+/* ===================================================================
+   7) SEÇÃO "SOBRE MIM"
+   =================================================================== */
+#sobre{ background: var(--bg-soft); }
+#sobre h2{ font-size: clamp(1.8rem,3.4vw,2.6rem); margin-bottom: 28px; }
+#sobre .texto-sobre p{ max-width: 70ch; font-size: 1.02rem; }
+
+/* ===================================================================
+   8) SEÇÃO "MINHAS ENTREGAS" — mosaico de cards estilo ingresso de show
+   =================================================================== */
+#entregas h2{ font-size: clamp(1.8rem,3.4vw,2.6rem); margin-bottom: 10px; }
+#entregas > .container > p{ margin-bottom: 40px; }
+
+.mosaico{
+  display:grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 22px;
+}
+@media (max-width: 760px){ .mosaico{ grid-template-columns: 1fr; } }
+
+/* tamanhos diferentes = "mosaico, estilo painel" */
+.card-entrega{ grid-column: span 3; }
+.card-entrega.tam-grande{ grid-column: span 4; }
+.card-entrega.tam-pequeno{ grid-column: span 2; }
+@media (max-width: 760px){
+  .card-entrega, .card-entrega.tam-grande, .card-entrega.tam-pequeno{ grid-column: span 1; }
+}
+
+/* o cartão em si: formato de ingresso de show (bordas picotadas) */
+.ingresso{
+  position:relative;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 26px 24px;
+  height:100%;
+  border: 1px solid var(--line);
+  /* recorte tipo "picote" nas bordas, feito com máscara radial repetida */
+  --raio-picote: 9px;
+  mask-image:
+    radial-gradient(circle var(--raio-picote) at 0 50%, transparent 98%, #000 100%),
+    radial-gradient(circle var(--raio-picote) at 100% 50%, transparent 98%, #000 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+  isolation:isolate;
+}
+/* linha pontilhada central, como o picote de um ingresso */
+.ingresso::before{
+  content:"";
+  position:absolute; left:14px; right:14px; top:50%;
+  border-top: 2px dashed var(--line);
+  opacity:0.6;
+}
+/* borda colorida que "gira" ao redor no hover — anel cônico animado */
+.ingresso::after{
+  content:"";
+  position:absolute; inset:-1px; border-radius: inherit;
+  padding:1px;
+  background: conic-gradient(from 0deg, var(--accent), transparent 30%, var(--accent) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity:0; transition: opacity var(--dur);
+  animation: girar 3.2s linear infinite paused;
+}
+.card-entrega:hover .ingresso::after{ opacity:1; animation-play-state: running; }
+.card-entrega:hover .ingresso{ transform: translateY(-3px); }
+.ingresso{ transition: transform var(--dur); }
+
+.ingresso-numero{
+  font-family: var(--font-display); color: var(--accent-soft);
+  font-size:0.85rem; letter-spacing:0.02em;
+}
+.ingresso h3{ font-size:1.2rem; margin: 6px 0 4px; }
+.ingresso .data{ font-size:0.8rem; color: var(--text-muted); }
+.ingresso .aprendi{ margin-top:10px; font-size:0.92rem; }
+.ingresso .rodape-card{
+  margin-top:16px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.selo{
+  font-family: var(--font-display); font-size:0.72rem; padding:4px 10px;
+  border-radius: 999px; border:1px solid var(--line); white-space:nowrap;
+}
+.selo.concluida{ background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.selo.em-breve{ color: var(--text-muted); }
+.ingresso .ver-link{ font-size:0.85rem; text-decoration:none; border-bottom:1px solid var(--accent); }
+
+/* cards "Em breve": aparência apagada e sem link clicável */
+.card-entrega.em-breve .ingresso{ opacity:0.55; filter: grayscale(0.4); }
+.card-entrega.em-breve .ver-link{ pointer-events:none; color: var(--text-muted); border-color: var(--text-muted); }
+
+/* ===================================================================
+   9) SEÇÃO "MANIFESTO" — recolhida, com botão para expandir
+   =================================================================== */
+#manifesto{ background: var(--bg-soft); }
+#manifesto h2{ font-size: clamp(1.8rem,3.4vw,2.6rem); margin-bottom: 20px; }
+.manifesto-caixa{
+  background: var(--bg-card); border:1px solid var(--line); border-radius: var(--radius);
+  padding: 28px; max-width: 760px;
+}
+.manifesto-texto{
+  max-height: 72px; overflow:hidden; position:relative;
+  transition: max-height 0.6s ease;
+}
+.manifesto-texto.aberto{ max-height: 600px; }
+.manifesto-texto::after{
+  content:""; position:absolute; left:0; right:0; bottom:0; height:40px;
+  background: linear-gradient(to bottom, transparent, var(--bg-card));
+  transition: opacity 0.3s;
+}
+.manifesto-texto.aberto::after{ opacity:0; }
+#botao-manifesto{
+  margin-top:16px;
+}
+
+/* ===================================================================
+   10) BOTÕES — contorno que se preenche no hover
+   =================================================================== */
+.botao{
+  display:inline-block; padding: 12px 24px; border-radius: 999px;
+  border: 1.5px solid var(--accent); color: var(--text);
+  text-decoration:none; font-family: var(--font-display); font-size:0.92rem;
+  background: transparent; cursor:pointer;
+  position:relative; overflow:hidden; z-index:1;
+}
+.botao::before{
+  content:""; position:absolute; inset:0; left:-100%;
+  background: var(--accent); z-index:-1;
+  transition: left var(--dur) ease;
+}
+.botao:hover::before{ left:0; }
+.botao:hover{ color: var(--accent-ink); }
+.botao.fantasma{ border-color: var(--line); }
+.botao.fantasma::before{ background: var(--text); }
+
+/* ===================================================================
+   11) RODAPÉ
+   =================================================================== */
+footer{ border-top:1px solid var(--line); padding: 48px 0; }
+.rodape-grid{ display:flex; flex-wrap:wrap; gap:24px; justify-content:space-between; align-items:center; }
+footer a{ text-decoration:none; }
+footer ul{ list-style:none; display:flex; gap:20px; padding:0; margin:0; flex-wrap:wrap; }
+
+/* ===================================================================
+   12) ANIMAÇÃO DE ENTRADA AO ROLAR A PÁGINA ("surge de baixo para cima")
+   A classe .revelar começa invisível/deslocada; JS adiciona .em-tela
+   quando o elemento entra na viewport (ver IntersectionObserver no JS).
+   =================================================================== */
+.revelar{
+  opacity:0; transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.revelar.em-tela{ opacity:1; transform:none; }
+</style>
+</head>
+<body>
+
+<!-- Barra de progresso de leitura: a largura é controlada pelo JS conforme o usuário rola -->
+<div id="barra-progresso"></div>
+
+<header>
+  <div class="nav-wrap">
+    <span class="marca">AranzaNataly</span>
+    <nav>
+      <ul>
+        <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#entregas">Entregas</a></li>
+        <li><a href="#manifesto">Manifesto</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+    <!-- botão de alternar tema claro/escuro -->
+    <button id="alternar-tema" aria-label="Alternar tema claro ou escuro" title="Alternar tema">🌙</button>
+  </div>
+</header>
+
+<!-- ======================= HERO ======================= -->
+<section class="hero" id="topo">
+  <!-- canvas onde desenhamos a constelação interativa (ver JS) -->
+  <canvas id="constelacao" aria-hidden="true"></canvas>
+
+  <div class="container hero-grid">
+    <div class="revelar">
+      <h1 class="hero-nome">Nátaly<br>Souza</h1>
+      <span class="hero-apelido">@AranzaNataly</span>
+      <p class="hero-frase">Curiosa, dedicada, criativa, determinada, sonhadora e apaixonada por aprender coisas novas.</p>
+      <div class="hero-cta">
+        <a href="#entregas" class="botao">Ver minhas entregas</a>
+        <a href="https://github.com/AranzaNataly" target="_blank" rel="noopener" class="botao fantasma">GitHub</a>
+      </div>
+    </div>
+
+    <div class="foto-palco revelar">
+      <!-- disco de vinil girando atrás da foto, remetendo à Capa do Álbum -->
+     
+      <!-- foto em formato hexágono com inclinação 3D ao passar o mouse (ver JS "tiltFoto") -->
+      <img src="./assets/foto-perfil.jpeg" alt="Foto de Nátaly Souza">
+        <!-- TROQUE este div por: <img src="sua-foto.jpg" alt="Foto de Nátaly Souza"> -->
+      
+        <!-- selo do "detalhe que só existe nesta página": troque o texto abaixo -->
+        <span class="detalhe-unico">16 anos de curiosidade<br>Varginha-MG</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="onda" viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 C150,70 350,0 600,30 C850,60 1050,0 1200,30 L1200,60 L0,60 Z"></path></svg>
+
+<!-- ======================= SOBRE MIM ======================= -->
+<section id="sobre">
+  <div class="container">
+    <h2 class="revelar">Sobre mim</h2>
+    <div class="texto-sobre revelar">
+      <p>Sou uma pessoa curiosa, criativa e determinada, que gosta de aprender coisas novas e descobrir diferentes possibilidades. Tenho interesse por tecnologia, especialmente pela área de Ciência da Computação, mas também gosto de Biologia, Matemática, leitura, música e atividades criativas, como crochê e culinária.</p>
+      <p>Valorizo muito minha família, minha fé, a lealdade e a sinceridade. Gosto de desafios, de desenvolver minhas habilidades e de transformar minhas ideias em projetos. Tenho muitos sonhos e acredito que, com dedicação, esforço e esperança, posso conquistar meus objetivos.</p>
+    </div>
+  </div>
+</section>
+
+<svg class="onda" viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 C150,0 350,60 600,30 C850,0 1050,60 1200,30 L1200,60 L0,60 Z"></path></svg>
+
+<!-- ======================= MINHAS ENTREGAS ======================= -->
+<section id="entregas">
+  <div class="container">
+    <h2 class="revelar">Minhas entregas</h2>
+    <p class="revelar">Cada cartão é uma entrega do curso técnico — veja o que fiz e o que aprendi em cada uma.</p>
+
+    <!--
+      COMO ADICIONAR UM NOVO CARD:
+      1) Copie um bloco inteiro <article class="card-entrega ..."> ... </article>.
+      2) Cole logo antes do </div> que fecha a .mosaico (no fim desta seção).
+      3) Troque: o número, o título, a data, a frase de "o que aprendi" e o link do GitHub.
+      4) Se a entrega ainda não existir, use class="card-entrega em-breve" e remova o href
+         (o link já fica desativado visualmente e ao clique pela classe "em-breve").
+      5) "tam-grande" e "tam-pequeno" só mudam o tamanho do card no mosaico — use como quiser.
+    -->
+    <div class="mosaico">
+
+      <article class="card-entrega tam-grande revelar">
+        <div class="ingresso">
+          <span class="ingresso-numero">Entrega 01</span>
+          <h3>Capa do Meu Álbum</h3>
+          <span class="data">[PREENCHER: data]</span>
+          <p class="aprendi">[PREENCHER: o que aprendi com essa entrega]</p>
+          <div class="rodape-card">
+            <span class="selo em-breve">[PREENCHER: status]</span>
+            <a class="ver-link" href="https://github.com/AranzaNataly/[PREENCHER-LINK]" target="_blank" rel="noopener">Ver no GitHub →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card-entrega revelar">
+        <div class="ingresso">
+          <span class="ingresso-numero">Entrega 02</span>
+          <h3>Dashboard Quem Sou Eu</h3>
+          <span class="data">[PREENCHER: data]</span>
+          <p class="aprendi">[PREENCHER: o que aprendi com essa entrega]</p>
+          <div class="rodape-card">
+            <span class="selo em-breve">[PREENCHER: status]</span>
+            <a class="ver-link" href="https://github.com/AranzaNataly/[PREENCHER-LINK]" target="_blank" rel="noopener">Ver no GitHub →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card-entrega revelar">
+        <div class="ingresso">
+          <span class="ingresso-numero">Entrega 03</span>
+          <h3>Árvore das Profissões 2.0</h3>
+          <span class="data">[PREENCHER: data]</span>
+          <p class="aprendi">[PREENCHER: o que aprendi com essa entrega]</p>
+          <div class="rodape-card">
+            <span class="selo em-breve">[PREENCHER: status]</span>
+            <a class="ver-link" href="https://github.com/AranzaNataly/[PREENCHER-LINK]" target="_blank" rel="noopener">Ver no GitHub →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card-entrega tam-pequeno revelar">
+        <div class="ingresso">
+          <span class="ingresso-numero">Entrega 04</span>
+          <h3>Âncoras de Carreira</h3>
+          <span class="data">[PREENCHER: data]</span>
+          <p class="aprendi">[PREENCHER: o que aprendi com essa entrega]</p>
+          <div class="rodape-card">
+            <span class="selo em-breve">[PREENCHER: status]</span>
+            <a class="ver-link" href="https://github.com/AranzaNataly/[PREENCHER-LINK]" target="_blank" rel="noopener">Ver no GitHub →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card-entrega tam-pequeno revelar">
+        <div class="ingresso">
+          <span class="ingresso-numero">Entrega 05</span>
+          <h3>Manifesto</h3>
+          <span class="data">[PREENCHER: data]</span>
+          <p class="aprendi">[PREENCHER: o que aprendi com essa entrega]</p>
+          <div class="rodape-card">
+            <span class="selo em-breve">[PREENCHER: status]</span>
+            <a class="ver-link" href="#manifesto">Ver seção →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- card de exemplo para uma entrega futura: mantenha o padrão "em-breve" -->
+      <article class="card-entrega em-breve tam-grande revelar">
+        <div class="ingresso">
+          <span class="ingresso-numero">Entrega 06</span>
+          <h3>[PREENCHER: título da próxima entrega]</h3>
+          <span class="data">[PREENCHER: data]</span>
+          <p class="aprendi">[PREENCHER: o que aprendi com essa entrega]</p>
+          <div class="rodape-card">
+            <span class="selo em-breve">Em breve</span>
+            <span class="ver-link">Ver no GitHub →</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<svg class="onda" viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0,30 C150,70 350,0 600,30 C850,60 1050,0 1200,30 L1200,60 L0,60 Z"></path></svg>
+
+<!-- ======================= MANIFESTO ======================= -->
+<section id="manifesto">
+  <div class="container">
+    <h2 class="revelar">Manifesto</h2>
+    <div class="manifesto-caixa revelar">
+      <div class="manifesto-texto" id="texto-manifesto">
+        <p>Acredito que a vida é feita de descobertas, aprendizados e oportunidades. Sou movida pela curiosidade, pela criatividade e pela vontade de construir um futuro melhor. Gosto de aprender, explorar novas ideias e transformar desafios em oportunidades de crescimento.</p>
+        <p>Valorizo minha família, minha fé, a sinceridade e a lealdade. Tenho sonhos, especialmente na área da tecnologia, e quero conquistar meus objetivos sem perder minha essência. Acredito que, com dedicação, esperança e coragem, posso transformar minhas ideias em realidade e construir uma história da qual me orgulhe.</p>
+      </div>
+      <button id="botao-manifesto" class="botao fantasma">Ler manifesto completo</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= RODAPÉ ======================= -->
+<footer id="contato">
+  <div class="container rodape-grid">
+    <span>© <span id="ano-atual"></span> Nátaly Souza — AranzaNataly</span>
+    <ul>
+      <li><a href="mailto:desouzanataly01@gmail.com">desouzanataly01@gmail.com</a></li>
+      <li><a href="https://instagram.com/nataly._souza" target="_blank" rel="noopener">@nataly._souza</a></li>
+      <li><a href="https://github.com/AranzaNataly" target="_blank" rel="noopener">github.com/AranzaNataly</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   TODO O JAVASCRIPT ABAIXO É PURO (sem bibliotecas), organizado por bloco
+   ===================================================================== */
+
+/* reduzeMovimento == true quando a pessoa ativou "reduzir movimento"
+   no sistema operacional — usamos isso para desligar os efeitos de
+   JS que não são cobertos pela media query de CSS (canvas e tilt). */
+const reduzeMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------------------------------------------------------------------
+   1) BARRA DE PROGRESSO DE LEITURA
+   Calcula quanto já foi rolado em relação ao total da página.
+--------------------------------------------------------------------- */
+const barraProgresso = document.getElementById('barra-progresso');
+function atualizarBarraProgresso(){
+  const alturaTotal = document.documentElement.scrollHeight - window.innerHeight;
+  const rolado = window.scrollY;
+  const percentual = alturaTotal > 0 ? (rolado / alturaTotal) * 100 : 0;
+  barraProgresso.style.width = percentual + '%';
+}
+window.addEventListener('scroll', atualizarBarraProgresso, { passive:true });
+atualizarBarraProgresso();
+
+/* ---------------------------------------------------------------------
+   2) CONTADOR "VOCÊ ESTÁ AQUI HÁ X SEGUNDOS"
+--------------------------------------------------------------------- */
+const cronometro = document.createElement('div');
+cronometro.id = 'tempo-na-pagina';
+document.body.appendChild(cronometro);
+let segundosNaPagina = 0;
+function atualizarCronometro(){
+  segundosNaPagina++;
+  cronometro.textContent = 'você está aqui há ' + segundosNaPagina + 's';
+}
+atualizarCronometro();
+setInterval(atualizarCronometro, 1000);
+
+/* ---------------------------------------------------------------------
+   3) ALTERNAR TEMA CLARO/ESCURO (com memória via localStorage)
+--------------------------------------------------------------------- */
+const botaoTema = document.getElementById('alternar-tema');
+const raizHtml = document.documentElement;
+function aplicarTema(tema){
+  if(tema === 'light'){
+    raizHtml.setAttribute('data-theme', 'light');
+    botaoTema.textContent = '☀️';
+  } else {
+    raizHtml.removeAttribute('data-theme');
+    botaoTema.textContent = '🌙';
+  }
+}
+const temaSalvo = localStorage.getItem('tema-aranzanataly');
+aplicarTema(temaSalvo === 'light' ? 'light' : 'dark');
+botaoTema.addEventListener('click', () => {
+  const temaAtual = raizHtml.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  const novoTema = temaAtual === 'light' ? 'dark' : 'light';
+  aplicarTema(novoTema);
+  localStorage.setItem('tema-aranzanataly', novoTema);
+});
+
+/* ---------------------------------------------------------------------
+   4) MANIFESTO: recolher/expandir
+--------------------------------------------------------------------- */
+const botaoManifesto = document.getElementById('botao-manifesto');
+const textoManifesto = document.getElementById('texto-manifesto');
+botaoManifesto.addEventListener('click', () => {
+  const abrindo = !textoManifesto.classList.contains('aberto');
+  textoManifesto.classList.toggle('aberto');
+  botaoManifesto.textContent = abrindo ? 'Recolher manifesto' : 'Ler manifesto completo';
+});
+
+/* ---------------------------------------------------------------------
+   5) ANIMAÇÃO AO ROLAR: elementos ".revelar" ganham ".em-tela" quando
+   entram na tela, usando IntersectionObserver (mais leve que ouvir o
+   evento de scroll o tempo todo).
+--------------------------------------------------------------------- */
+const elementosRevelar = document.querySelectorAll('.revelar');
+if('IntersectionObserver' in window && !reduzeMovimento){
+  const observador = new IntersectionObserver((entradas) => {
+    entradas.forEach(entrada => {
+      if(entrada.isIntersecting){
+        entrada.target.classList.add('em-tela');
+        observador.unobserve(entrada.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  elementosRevelar.forEach(el => observador.observe(el));
+} else {
+  // sem suporte ou com movimento reduzido: mostra tudo direto, sem animar
+  elementosRevelar.forEach(el => el.classList.add('em-tela'));
+}
+
+/* ---------------------------------------------------------------------
+   6) FOTO QUE INCLINA EM 3D AO PASSAR O MOUSE (efeito "tilt")
+--------------------------------------------------------------------- */
+const fotoHex = document.getElementById('foto-hex');
+if(fotoHex && !reduzeMovimento){
+  fotoHex.addEventListener('mousemove', (evento) => {
+    const retangulo = fotoHex.getBoundingClientRect();
+    const x = (evento.clientX - retangulo.left) / retangulo.width - 0.5;
+    const y = (evento.clientY - retangulo.top) / retangulo.height - 0.5;
+    const anguloX = (-y * 14).toFixed(2);
+    const anguloY = (x * 14).toFixed(2);
+    fotoHex.style.transform = `perspective(600px) rotateX(${anguloX}deg) rotateY(${anguloY}deg)`;
+  });
+  fotoHex.addEventListener('mouseleave', () => {
+    fotoHex.style.transform = 'perspective(600px) rotateX(0) rotateY(0)';
+  });
+}
+
+/* ---------------------------------------------------------------------
+   7) CONSTELAÇÃO INTERATIVA NO CANVAS DO HERO
+   Desenha pontinhos (estrelas) que se conectam por linhas quando estão
+   perto o bastante, e reagem à posição do mouse (ele vira mais uma
+   "estrela" que também se conecta às outras).
+--------------------------------------------------------------------- */
+(function constelacao(){
+  const canvas = document.getElementById('constelacao');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const secaoHero = document.getElementById('topo');
+  let largura, altura, estrelas = [];
+  const mouse = { x: null, y: null, ativo:false };
+  const corLinha = () => getComputedStyle(document.documentElement).getPropertyValue('--star').trim();
+
+  function redimensionar(){
+    largura = canvas.width = secaoHero.offsetWidth;
+    altura = canvas.height = secaoHero.offsetHeight;
+    const quantidade = Math.floor((largura * altura) / 14000);
+    estrelas = Array.from({ length: quantidade }, () => ({
+      x: Math.random() * largura,
+      y: Math.random() * altura,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25
+    }));
+  }
+
+  function desenhar(){
+    ctx.clearRect(0, 0, largura, altura);
+    const cor = corLinha();
+    // move e desenha cada estrela
+    estrelas.forEach(estrela => {
+      estrela.x += estrela.vx;
+      estrela.y += estrela.vy;
+      if(estrela.x < 0 || estrela.x > largura) estrela.vx *= -1;
+      if(estrela.y < 0 || estrela.y > altura) estrela.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(estrela.x, estrela.y, 1.6, 0, Math.PI * 2);
+      ctx.fillStyle = cor;
+      ctx.fill();
+    });
+    // conecta estrelas próximas entre si e com o mouse
+    const pontos = mouse.ativo ? estrelas.concat([{ x:mouse.x, y:mouse.y }]) : estrelas;
+    for(let i=0; i<pontos.length; i++){
+      for(let j=i+1; j<pontos.length; j++){
+        const dx = pontos[i].x - pontos[j].x;
+        const dy = pontos[i].y - pontos[j].y;
+        const distancia = Math.sqrt(dx*dx + dy*dy);
+        if(distancia < 120){
+          ctx.beginPath();
+          ctx.moveTo(pontos[i].x, pontos[i].y);
+          ctx.lineTo(pontos[j].x, pontos[j].y);
+          ctx.strokeStyle = cor;
+          ctx.globalAlpha = 1 - distancia / 120;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+    if(!reduzeMovimento){ requestAnimationFrame(desenhar); }
+  }
+
+  secaoHero.addEventListener('mousemove', (evento) => {
+    const retangulo = secaoHero.getBoundingClientRect();
+    mouse.x = evento.clientX - retangulo.left;
+    mouse.y = evento.clientY - retangulo.top;
+    mouse.ativo = true;
+  });
+  secaoHero.addEventListener('mouseleave', () => { mouse.ativo = false; });
+  window.addEventListener('resize', redimensionar);
+
+  redimensionar();
+  // se "reduzir movimento" estiver ativo, desenha só um quadro parado
+  desenhar();
+})();
+
+/* ---------------------------------------------------------------------
+   8) ANO ATUAL NO RODAPÉ
+--------------------------------------------------------------------- */
+document.getElementById('ano-atual').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

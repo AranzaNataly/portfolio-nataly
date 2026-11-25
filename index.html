@@ -227,7 +227,25 @@ nav a:hover{ color: var(--accent); }
    7) SEÇÃO "SOBRE MIM"
    =================================================================== */
 #sobre{ background: var(--bg-soft); }
-#sobre h2{ font-size: clamp(1.8rem,3.4vw,2.6rem); margin-bottom: 28px; }
+#sobre > .container{
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+#sobre h2{
+  width: 100%;
+  text-align: center;
+  font-size: clamp(1.8rem,3.4vw,2.6rem);
+  margin-bottom: 28px;
+}
+#sobre .texto-sobre{
+  width: 100%;
+  max-width: 70ch;
+  text-align: center;
+}
 #sobre .texto-sobre p{ max-width: 70ch; font-size: 1.02rem; }
 
 /* ===================================================================
@@ -430,6 +448,7 @@ footer ul{ list-style:none; display:flex; gap:20px; padding:0; margin:0; flex-wr
     <span class="marca">AranzaNataly</span>
     <nav>
       <ul>
+        <li><a href="#topo">Início</a></li>
         <li><a href="#sobre">Sobre</a></li>
         <li><a href="#entregas">Entregas</a></li>
         <li><a href="#manifesto">Manifesto</a></li>
@@ -532,7 +551,6 @@ footer ul{ list-style:none; display:flex; gap:20px; padding:0; margin:0; flex-wr
           <img src="./dashboard-competencias.png" class="miniatura" alt="Imagem das minhas competências do Dashboard" onclick="abrirImagem(this)">
           <p class="aprendi">Conhecimento proprio</p>
           <div class="rodape-card">
-            <span class="concluida">concluida</span>
             <a class="ver-link" href="https://github.com/AranzaNataly/dashboard1" target="_blank" rel="noopener">Ver no GitHub →</a>
             <a class="ver-link" href="https://aranzanataly.github.io/dashboard1/" target="_blank" rel="noopener">Ir para o site →</a>
           </div>

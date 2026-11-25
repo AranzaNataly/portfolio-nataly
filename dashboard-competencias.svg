@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="369" viewBox="0 0 1000 369">
+<rect width="1000" height="369" rx="18" fill="#fff"/>
+<text x="41" y="72" font-family="Georgia,serif" font-size="32" font-weight="bold" fill="#252033">Minhas <tspan fill="#bd83ef">competências</tspan></text>
+<g font-family="Georgia,serif">
+<rect x="42" y="103" width="452" height="107" rx="20" fill="#fff8fc" stroke="#f1ddfb" stroke-width="1.5"/>
+<text x="64" y="149" font-size="23" font-weight="bold" fill="#bd83ef">Liderança</text>
+<text x="64" y="181" font-family="Arial,sans-serif" font-size="19" fill="#252033">Sei conduzir e organizar situações.</text>
+<rect x="514" y="103" width="452" height="107" rx="20" fill="#fff8fc" stroke="#f1ddfb" stroke-width="1.5"/>
+<text x="536" y="149" font-size="23" font-weight="bold" fill="#bd83ef">Responsabilidade</text>
+<text x="536" y="181" font-family="Arial,sans-serif" font-size="19" fill="#252033">Levo meus compromissos a sério.</text>
+<rect x="42" y="231" width="452" height="107" rx="20" fill="#fff8fc" stroke="#f1ddfb" stroke-width="1.5"/>
+<text x="64" y="277" font-size="23" font-weight="bold" fill="#bd83ef">Planejamento</text>
+<text x="64" y="309" font-family="Arial,sans-serif" font-size="19" fill="#252033">Gosto de organizar tarefas e projetos.</text>
+<rect x="514" y="231" width="452" height="107" rx="20" fill="#fff8fc" stroke="#f1ddfb" stroke-width="1.5"/>
+<text x="536" y="277" font-size="23" font-weight="bold" fill="#bd83ef">Tomada de decisão</text>
+<text x="536" y="309" font-family="Arial,sans-serif" font-size="19" fill="#252033">Consigo avaliar e decidir com calma.</text>
+</g></svg>

@@ -436,6 +436,49 @@ footer ul{ list-style:none; display:flex; gap:20px; padding:0; margin:0; flex-wr
     font-size: 40px;
     cursor: pointer;
 }
+
+/* AJUSTE DE LAYOUT: menu lateral e entregas em cartões horizontais */
+@media (min-width: 761px){
+  .nav-wrap{max-width:none; padding:16px 30px;}
+  header nav{
+    position:fixed; left:0; top:82px; bottom:0; width:245px;
+    padding:24px 30px; border-right:1px solid var(--line);
+    background:var(--bg); z-index:80;
+  }
+  header nav ul{display:flex; flex-direction:column; gap:28px;}
+  section{margin-left:245px; padding:40px 0;}
+  .onda{margin-left:245px; width:calc(100% - 245px);}
+  .container{max-width:1400px; padding-left:clamp(28px,6vw,110px); padding-right:clamp(28px,6vw,110px);}
+  .hero{min-height:calc(100vh - 82px); padding-top:40px;}
+  .mosaico{display:grid; grid-template-columns:minmax(0,1fr); gap:28px;}
+  .card-entrega,.card-entrega.tam-grande,.card-entrega.tam-pequeno{grid-column:1;}
+  .ingresso{mask-image:none; -webkit-mask-image:none; display:block;}
+  .ingresso:has(.miniatura){
+    display:grid; grid-template-columns:minmax(220px, 34%) minmax(0,1fr);
+    column-gap:24px; align-items:start; min-height:300px;
+  }
+  .ingresso:has(.miniatura) .miniatura{
+    grid-column:1; grid-row:1 / span 5; width:100%; max-width:420px;
+    height:100%; max-height:320px; object-fit:contain;
+    background:var(--bg-soft); border-radius:10px; cursor:pointer;
+  }
+  .ingresso:has(.miniatura) .ingresso-numero,
+  .ingresso:has(.miniatura) h3,
+  .ingresso:has(.miniatura) .data,
+  .ingresso:has(.miniatura) .aprendi,
+  .ingresso:has(.miniatura) .rodape-card{grid-column:2;}
+  .ingresso::before{display:none;}
+}
+@media (max-width:760px){
+  header nav{position:static; width:auto; padding:0; border:0; background:transparent;}
+  nav ul{gap:12px; flex-wrap:wrap;}
+  section{margin-left:0;}
+  .onda{margin-left:0; width:100%;}
+  .mosaico{grid-template-columns:1fr;}
+  .card-entrega,.card-entrega.tam-grande,.card-entrega.tam-pequeno{grid-column:1;}
+  .ingresso{mask-image:none; -webkit-mask-image:none;}
+}
+
 </style>
 </head>
 <body>

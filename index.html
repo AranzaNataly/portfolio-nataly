@@ -410,12 +410,12 @@ footer ul{ list-style:none; display:flex; gap:20px; padding:0; margin:0; flex-wr
 #lightbox {
     display: none;
     position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
+    inset: 0;
+    z-index: 10000;
+    width: 100vw;
+    height: 100vh;
+    padding: 24px;
+    background-color: rgba(0, 0, 0, 0.92);
     justify-content: center;
     align-items: center;
 }
@@ -573,11 +573,7 @@ footer ul{ list-style:none; display:flex; gap:20px; padding:0; margin:0; flex-wr
         <!-- Imagem pequena -->
 <img src="https://raw.githubusercontent.com/AranzaNataly/capa_do_album/main/capa-do-album.jpeg?raw=1" class="miniatura" onclick="abrirImagem(this)">
 
-<!-- Lightbox -->
-<div id="lightbox" onclick="fecharImagem()">
-    <span class="fechar">&times;</span>
-    <img id="imagemAmpliada">
-</div>
+
          <p class="aprendi">Com essa entrega eu aprendi várias coisas sobre mim, uma delas a confiar mais que as coisas vão dar certo</p>
           <div class="rodape-card">
             <a class="ver-link" href="https://github.com/AranzaNataly/capa_do_album/blob/main/capa-do-album.jpeg" target="_blank" rel="noopener">Ver no GitHub →</a>
@@ -680,6 +676,12 @@ footer ul{ list-style:none; display:flex; gap:20px; padding:0; margin:0; flex-wr
     </ul>
   </div>
 </footer>
+
+<!-- Lightbox global: fica fora dos cartões para aparecer sempre acima da página -->
+<div id="lightbox" onclick="fecharImagem()" role="dialog" aria-modal="true" aria-label="Imagem ampliada">
+    <button class="fechar" type="button" aria-label="Fechar imagem" onclick="event.stopPropagation(); fecharImagem()">&times;</button>
+    <img id="imagemAmpliada" alt="Imagem ampliada">
+</div>
 
 <script>
 /* =====================================================================
